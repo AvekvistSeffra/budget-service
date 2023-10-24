@@ -24,8 +24,9 @@ async fn main() -> Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let config =
-        Config::load("config.yaml").with_context(|| format!("failed to load configuration"))?;
+    let config = Config::load("config.yaml")
+        .or(Config::load("/etc/budget-service.yaml"))
+        .with_context(|| format!("failed to load configuration"))?;
 
     let db_connection_string = config.database.connection_string();
 
